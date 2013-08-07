@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<map:sitemap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://apache.org/cocoon/sitemap/1.0 http://cocoon.apache.org/schema/sitemap/cocoon-sitemap-1.0.xsd"
+ xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+
+  <map:components>
+    <map:selectors>
+      <map:selector name="content" 
+        src="org.apache.cocoon.selection.HeaderSelector"
+        logger="sitemap.selector.content">
+        
+        <content name="html" header-name="text/html"/>
+        <content name="xml" header-name="text/xml"/>
+        
+      </map:selector>
+      <map:selector logger="sitemap.selector.header" name="header" src="org.apache.cocoon.selection.HeaderSelector">
+         <header-name>Content-Type</header-name> 
+      </map:selector>
+    </map:selectors>
+  </map:components>
+  
+  <!--+
+      | Definition of the control flow implementation.
+      +-->
+  <map:flow language="javascript"/>
+
+  <map:pipelines>
+
+     <map:pipeline id="readingTEI-internal" internal-only="true">
+
+      <map:match pattern="doXML/**">
+        <map:generate src="http://sga.mith.org/sc-demo/tei/ox/{1}.xml" type="file"/>
+        <map:serialize type="xml"/>
+      </map:match>
+
+      <map:match pattern="doHTML/**">
+        <map:generate src="http://sga.mith.org/sc-demo/tei/ox/{1}.xml" type="file"/>
+        <map:transform src="xslt/wrap-page.xsl" type="saxon"/>
+        <map:serialize type="xml"/>
+      </map:match>
+
+      <map:match pattern="GEtoLite/*/**">
+        <map:generate src="cocoon:/{1}/{2}"/>
+        <map:transform src="xslt/ws-cleanup.xsl" type="saxon"/>
+        <map:transform src="xslt/text-emend.xsl" type="saxon"/>
+        <map:transform src="xslt/flatten-surfaces.xsl" type="saxon"/>
+        <map:transform src="xslt/p-promote.xsl" type="saxon"/>
+        <map:transform src="xslt/final-cleanup.xsl" type="saxon"/>
+        <map:serialize type="xml"/>
+      </map:match>
+    </map:pipeline>
+
+    <map:pipeline id="readingTEI">
+
+       <map:match pattern="*">
+
+        <map:select type="header">
+          <map:when test="text/xml">
+            <map:generate src="cocoon:/GEtoLite/doXML/{1}"/>
+            <map:serialize type="xml"/>
+          </map:when>
+          <map:when test="text/html">
+            <map:generate src="cocoon:/GEtoLite/doHTML/{1}"/>
+            <map:transform src="xslt/toHTML.xsl" type="saxon"/>
+            <map:serialize type="html"/>
+          </map:when>
+          <map:otherwise>
+            <map:generate src="cocoon:/GEtoLite/doHTML/{1}"/>
+            <map:transform src="xslt/toHTML.xsl" type="saxon"/>
+            <map:serialize type="html"/>
+          </map:otherwise>
+        </map:select>
+      </map:match> 
+
+    </map:pipeline>
+
+    <!--+
+        | Default pipelines
+        +-->
+    <map:pipeline id="internal-resource" internal-only="true">
+      <!-- Put matchers for internal (accessible only to Cocoon blocks) resources here
+        More details: http://cocoon.zones.apache.org/daisy/cdocs-site-main/g2/1345.html -->
+      <map:match pattern="resource/internal/**">
+        <map:read src="resource/internal/{1}"/>
+      </map:match>
+    </map:pipeline>
+
+    <map:pipeline id="external-resource">
+      <!-- Put matchers for external (accessible to the outside world, e.g. browser) resources here.
+        More details: http://cocoon.zones.apache.org/daisy/cdocs-site-main/g2/1345.html -->
+      <map:match pattern="resource/external/**">
+        <map:read src="resource/external/{1}"/>
+      </map:match>
+    </map:pipeline>
+
+    <map:pipeline id="service">
+      <!-- Put your servlet service matchers here.
+        More details: http://cocoon.zones.apache.org/daisy/cdocs-site-main/g2/1345.html -->
+    </map:pipeline>
+  </map:pipelines>
+
+</map:sitemap>
