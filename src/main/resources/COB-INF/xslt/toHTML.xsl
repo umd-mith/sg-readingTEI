@@ -82,13 +82,13 @@
     
     <!-- this will eventually be obsolete -->
     <xsl:template match="tei:add[@source]">
-        <span class="diag">
+        <!--<span class="diag">-->
             <xsl:apply-templates/>
-        </span>
+        <!--</span>-->
     </xsl:template>
     
     <xsl:template match="tei:lb">
-      <span class="lb">|</span>
+        <xsl:text> </xsl:text>
     </xsl:template>
   
     <xsl:template match="tei:metamark"/>
