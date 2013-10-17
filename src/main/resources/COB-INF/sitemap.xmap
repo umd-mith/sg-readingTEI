@@ -45,12 +45,12 @@
      <map:pipeline id="readingTEI-internal" internal-only="true">
 
       <map:match pattern="doXML/**">
-        <map:generate src="http://sga.mith.org/sc-demo/tei/ox/{1}.xml" type="file"/>
+        <map:generate src="http://dev.shelleygodwinarchive.org/tei/ox/{1}.xml" type="file"/>
         <map:serialize type="xml"/>
       </map:match>
 
       <map:match pattern="doHTML/**">
-        <map:generate src="http://sga.mith.org/sc-demo/tei/ox/{1}.xml" type="file"/>
+        <map:generate src="http://dev.shelleygodwinarchive.org/tei/ox/{1}.xml" type="file"/>
         <map:transform src="xslt/wrap-page.xsl" type="saxon"/>
         <map:serialize type="xml"/>
       </map:match>
