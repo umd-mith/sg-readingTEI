@@ -69,6 +69,12 @@
     </add>
   </xsl:template>
   
+  <xsl:template match="anchor[//zone[@corresp=concat('#', current()/@xml:id)]]">
+    <xsl:for-each select="//zone[@corresp=concat('#', current()/@xml:id)]">
+      <xsl:apply-templates/>
+    </xsl:for-each>
+  </xsl:template>
+  
   <!-- insert mode doesn't copy the element being inserted, but all its contents -->
   <xsl:template match="*" mode="insert">
     <xsl:apply-templates/>

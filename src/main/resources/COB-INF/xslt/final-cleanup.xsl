@@ -61,7 +61,7 @@
   </xsl:function>
 
   <xsl:template match="line">
-    <!--<xsl:text> </xsl:text>-->
+    <xsl:text> </xsl:text>
     <lb/>
     <xsl:apply-templates/>
   </xsl:template>
