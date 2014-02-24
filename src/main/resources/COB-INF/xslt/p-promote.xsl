@@ -9,7 +9,9 @@
 <!-- Paragraph promotion from milestone[@unit='tei:p']
 -->
 
-  <xsl:template match="div[@type='chapter']">
+  <xsl:param name="unit" select="'tei:p'"/>
+
+  <xsl:template match="div[@type='chapter'] | ab[@type='surface']">
     <xsl:copy copy-namespaces="no">
       <xsl:copy-of select="@*"/>
       <xsl:copy-of select="head"/>
@@ -23,12 +25,12 @@
     <xsl:variable name="here" select="."/>
     <!-- grouping all the leaf nodes into sets representing paragraphs -->
     <xsl:for-each-group select="descendant::node()[empty(node())]"
-      group-starting-with="milestone[@unit='tei:p']">
-      <p>
+      group-starting-with="milestone[@unit=$unit]">
+      <xsl:element name="{substring-after($unit, ':')}">
         <xsl:call-template name="build">
           <xsl:with-param name="from" select="$here" tunnel="yes"/>
         </xsl:call-template>
-      </p>
+      </xsl:element>
     </xsl:for-each-group>
   </xsl:template>
   
@@ -43,11 +45,11 @@
       <xsl:for-each select="$copying">
         <xsl:copy>
           <xsl:copy-of select="@* except @xml:id"/>
-          <!--<xsl:choose>
+          <xsl:choose>
             <xsl:when
               test="$copying/descendant::node()[empty(node())][1] &lt;&lt; current-group()[1]">
-              <!-\- if the element we are copying has content preceding the current group, we
-                map @xml:id to @sameAs and annotate its @rend -\->
+              <!-- if the element we are copying has content preceding the current group, we
+                map @xml:id to @sameAs and annotate its @rend -->
               <xsl:attribute name="rend"
                 select="string-join((@rend,'continued'),' ')"/>
               <xsl:for-each select="@xml:id">
@@ -57,7 +59,7 @@
             <xsl:otherwise>
               <xsl:copy-of select="@xml:id"/>
             </xsl:otherwise>
-          </xsl:choose>-->
+          </xsl:choose>
           <xsl:call-template name="build">
             <xsl:with-param name="level" select="$level + 1"/>
           </xsl:call-template>
