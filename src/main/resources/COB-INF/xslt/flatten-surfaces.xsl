@@ -13,14 +13,14 @@
   </xsl:template>
 
   <xsl:template match="surface">
-    <pb>
+    <!--<pb>
       <xsl:comment>
       <xsl:text> Starting surface[@xml:id=' </xsl:text>
       <xsl:value-of select="@xml:id"/>
       <xsl:text>']</xsl:text>
     </xsl:comment>
-    </pb>
-    <xsl:apply-templates select="zone[@type='main']"/>
+    </pb>-->
+    <ab type="surface"><xsl:apply-templates select="zone[@type='main']"/></ab>
   </xsl:template>
 
   <xsl:template match="zone">
