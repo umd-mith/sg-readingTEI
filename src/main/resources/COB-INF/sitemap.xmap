@@ -55,16 +55,25 @@
   <map:flow language="javascript"/>
 
   <map:pipelines>
+    
+    <map:component-configurations>
+      <global-variables>
+        <!-- Replace this with the HTTP base URL for the SGA XML files.
+             For example if running on a local server: http://localhost:8080/sga/
+        -->
+        <sgaBaseUrl>http://shelleygodwinarchive.org/tei/ox</sgaBaseUrl>
+      </global-variables>
+    </map:component-configurations>
 
      <map:pipeline id="readingTEI-internal" internal-only="true">
 
       <map:match pattern="doXML/**">
-        <map:generate src="http://dev.shelleygodwinarchive.org/tei/ox/{1}.xml" type="file"/>
+        <map:generate src="{global:sgaBaseUrl}/{1}.xml" type="file"/>
         <map:serialize type="xml"/>
       </map:match>
 
       <map:match pattern="doHTML/**">
-        <map:generate src="http://dev.shelleygodwinarchive.org/tei/ox/{1}.xml" type="file"/>
+        <map:generate src="{global:sgaBaseUrl}/{1}.xml" type="file"/>
         <map:transform src="xslt/wrap-page.xsl" type="saxon"/>
         <map:serialize type="xml"/>
       </map:match>
@@ -82,20 +91,20 @@
 
     <map:pipeline id="readingTEI">
 
-       <map:match pattern="*">
+       <map:match pattern="*/*">
 
         <map:select type="header">
           <map:when test="text/xml">
-            <map:generate src="cocoon:/GEtoLite/doXML/{1}"/>
+            <map:generate src="cocoon:/GEtoLite/doXML/{1}/{2}"/>
             <map:serialize type="xml"/>
           </map:when>
           <map:when test="text/html">
-            <map:generate src="cocoon:/GEtoLite/doHTML/{1}"/>
+            <map:generate src="cocoon:/GEtoLite/doHTML/{1}/{2}"/>
             <map:transform src="xslt/toHTML.xsl" type="saxon"/>
             <map:serialize type="html"/>
           </map:when>
           <map:otherwise>
-            <map:generate src="cocoon:/GEtoLite/doHTML/{1}"/>
+            <map:generate src="cocoon:/GEtoLite/doHTML/{1}/{2}"/>
             <map:transform src="xslt/toHTML.xsl" type="saxon"/>
             <map:serialize type="html"/>
           </map:otherwise>
