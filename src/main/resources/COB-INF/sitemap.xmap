@@ -83,7 +83,8 @@
         <map:transform src="xslt/ws-cleanup.xsl" type="saxon"/>
         <map:transform src="xslt/text-emend.xsl" type="saxon"/>
         <map:transform src="xslt/flatten-surfaces.xsl" type="saxon"/>
-        <map:transform src="xslt/p-promote.xsl" type="saxon"/>
+        <map:transform src="xslt/expand-milestones.xsl" type="saxon"/>
+        <map:transform src="xslt/poetry.xsl" type="saxon"/>
         <map:transform src="xslt/final-cleanup.xsl" type="saxon"/>
         <map:serialize type="xml"/>
       </map:match>
@@ -101,12 +102,12 @@
           <map:when test="text/html">
             <map:generate src="cocoon:/GEtoLite/doHTML/{1}/{2}"/>
             <map:transform src="xslt/toHTML.xsl" type="saxon"/>
-            <map:serialize type="html"/>
+            <map:serialize type="xhtml"/>
           </map:when>
           <map:otherwise>
             <map:generate src="cocoon:/GEtoLite/doHTML/{1}/{2}"/>
             <map:transform src="xslt/toHTML.xsl" type="saxon"/>
-            <map:serialize type="html"/>
+            <map:serialize type="xhtml"/>
           </map:otherwise>
         </map:select>
       </map:match> 
