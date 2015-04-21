@@ -24,6 +24,9 @@
   
   <!-- head inside p is spurious, left behind from paragraph promotion -->
   <xsl:template match="p/head"/>
+  
+  <!-- Get rid of anchors -->
+  <xsl:template match="anchor"/>
 
   <!-- Promoting pb elements at the front and end of paragraphs to be
        next to, not inside them. -->
@@ -66,7 +69,7 @@
     <xsl:apply-templates/>
   </xsl:template>
   
-  <xsl:template match="milestone[@unit='tei:p']"/>
+  <xsl:template match="milestone"/>
   
   <xsl:template match="node() | @*" mode="copy #default">
     <xsl:copy>
