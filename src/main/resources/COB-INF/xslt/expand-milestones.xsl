@@ -25,10 +25,9 @@
     <xsl:template match="div[@type='chapter'] | ab[@type='surface']">
         <xsl:copy copy-namespaces="no">
             <xsl:copy-of select="@*"/>
-            <xsl:variable name="one"><xsl:call-template name="groupMilestones">
+            <xsl:call-template name="groupMilestones">
                 <xsl:with-param name="set" select="node()"/>
-            </xsl:call-template></xsl:variable>
-            <xsl:sequence select="$one"/>
+            </xsl:call-template>
         </xsl:copy>
     </xsl:template>
     
@@ -67,7 +66,6 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="$pass//milestone">
-                <xsl:message>pass</xsl:message>
                 <xsl:call-template name="groupMilestones">
                     <xsl:with-param name="set" select="$pass/node()"/>
                 </xsl:call-template>
