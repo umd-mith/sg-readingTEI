@@ -18,6 +18,8 @@
 
   -->
  
+  <!-- TODO: deal with listTranspose and relater tei:seg. Used for listTranspose *across lines* in c56 38 --> 
+ 
   <xsl:strip-space elements="mod"/>
   
   <xsl:template match="* | @*">
@@ -32,7 +34,19 @@
   
   <xsl:template match="del"/>
   
-  <xsl:template match="addSpan | delSpan | modSpan "/>
+  <xsl:template match="addSpan | delSpan | modSpan | mod[@spanTo] | 
+                       milestone[@unit='tei:seg'] | listTranspose "/>
+  
+  <xsl:template match="anchor">
+    <xsl:choose>
+      <xsl:when test="concat('#', @xml:id) = (//addSpan/@spanTo, //delSpan/@spanTo, 
+                                              //modSpan/@spanTo, //mod/@spanTo,
+                                              //milestone[@unit='tei:seg']/@spanTo)"/>
+      <xsl:otherwise>
+        <xsl:sequence select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   
   <xsl:key name="delSpan-for-text" match="delSpan">
     <xsl:apply-templates select="following::node()[1]" mode="collect-delSpan">
