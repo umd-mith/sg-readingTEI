@@ -11,9 +11,9 @@
     
     <xsl:function name="sga:mil">
         <xsl:param name="here"/>
-        <xsl:variable name="m" select="$here/preceding::milestone[1]/@spanTo/substring-after(.,'#')"/>
+        <xsl:variable name="m" select="$here/preceding-sibling::milestone[1]/@spanTo/substring-after(.,'#')"/>
         <xsl:choose>
-            <xsl:when test="$here/following::anchor[1][@xml:id=$m]">
+            <xsl:when test="$here/following-sibling::anchor[1][@xml:id=$m]">
                 <xsl:value-of select="$m"/>
             </xsl:when>
             <xsl:otherwise>
@@ -36,26 +36,39 @@
         <xsl:variable name="pass">
             <xsl:for-each-group select="$set"
                 group-adjacent="sga:mil(current())">
-                <xsl:choose>
+                <xsl:choose>                    
                     <xsl:when test="current-grouping-key() != ''">
-                        <xsl:element name="{current-group()[1]/preceding::milestone[1]/@unit/substring-after(.,':')}">
-                            <xsl:copy-of select="current-group()"/>
+                        <xsl:element name="{current-group()[1]/preceding-sibling::milestone[1]
+                                            /@unit/substring-after(.,':')}">
+                            <xsl:call-template name="copy_down">
+                                <xsl:with-param name="set" select="current-group()"/>
+                            </xsl:call-template>
                         </xsl:element>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:choose>
                             <xsl:when test="current-group()[last()][local-name()='milestone'] and
                                 current-group()[1][local-name()='anchor']">
-                                <xsl:copy-of select="remove(remove(current-group(), count(current-group())),1)"/>
+                                <xsl:call-template name="copy_down">
+                                    <xsl:with-param name="set" 
+                                                    select="remove(remove(current-group(), count(current-group())),1)"/>
+                                </xsl:call-template>
                             </xsl:when>
                             <xsl:when test="current-group()[last()][local-name()='milestone']">
-                                <xsl:copy-of select="remove(current-group(), count(current-group()))"/>
+                                <xsl:call-template name="copy_down">
+                                    <xsl:with-param name="set" 
+                                        select="remove(current-group(), count(current-group()))"/>
+                                </xsl:call-template>
                             </xsl:when>
                             <xsl:when test="current-group()[1][local-name()='anchor']">
-                                <xsl:copy-of select="remove(current-group(), 1)"/>
+                                <xsl:call-template name="copy_down">
+                                    <xsl:with-param name="set" select="remove(current-group(), 1)"/>
+                                </xsl:call-template>
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:copy-of select="current-group()"/>
+                                <xsl:call-template name="copy_down">
+                                    <xsl:with-param name="set" select="current-group()"/>
+                                </xsl:call-template>
                             </xsl:otherwise>
                         </xsl:choose>
                         
@@ -74,6 +87,26 @@
                 <xsl:sequence select="$pass"/>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template name="copy_down">
+        <!-- When there are dscendant milestones, we need to recurse down before recursing sideways -->
+        <xsl:param name="set"/>
+        <xsl:for-each select="$set">
+            <xsl:choose>
+                <xsl:when test="descendant::milestone">
+                    <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:call-template name="groupMilestones">
+                            <xsl:with-param name="set" select="node()"/>
+                        </xsl:call-template>
+                    </xsl:copy>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:copy-of select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
     </xsl:template>
     
     <xsl:template match="node() | @*">
