@@ -83,6 +83,7 @@
         <map:transform src="xslt/ws-cleanup.xsl" type="saxon"/>
         <map:transform src="xslt/text-emend.xsl" type="saxon"/>
         <map:transform src="xslt/flatten-surfaces.xsl" type="saxon"/>
+        <map:transform src="xslt/p-makeanchors.xsl" type="saxon"/>
         <map:transform src="xslt/expand-milestones.xsl" type="saxon"/>
         <map:transform src="xslt/poetry.xsl" type="saxon"/>
         <map:transform src="xslt/final-cleanup.xsl" type="saxon"/>
