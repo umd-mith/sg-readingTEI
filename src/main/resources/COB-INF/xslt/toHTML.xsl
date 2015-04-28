@@ -15,7 +15,7 @@
                 <title>SGA text view</title>
                 <style type="text/css">
                     .pb {background-color:cyan}
-                    .lg {}
+                    .lg {padding-left: 2em}
                     .diag {background-color:yellow}
                     .hyphenated {}
                     .underline {text-decoration:underline}
