@@ -42,6 +42,7 @@
       <xsl:when test="concat('#', @xml:id) = (//addSpan/@spanTo, //delSpan/@spanTo, 
                                               //modSpan/@spanTo, //mod/@spanTo,
                                               //milestone[@unit='tei:seg']/@spanTo)"/>
+      <xsl:when test="not(concat('#', @xml:id) = //*/@spanTo)"/>
       <xsl:otherwise>
         <xsl:sequence select="."/>
       </xsl:otherwise>
@@ -71,7 +72,24 @@
     <xsl:next-match/>
   </xsl:template>
   
+  <xsl:template match="milestone | anchor" mode="collect-delSpan" priority="1">
+    <xsl:sequence select="generate-id()"/>
+    <xsl:next-match/>
+  </xsl:template>
+  
   <xsl:template match="text()">
+    <xsl:if test="empty(key('delSpan-for-text',generate-id()))">
+      <xsl:next-match/>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="milestone[not(@unit='tei:seg')]">
+    <xsl:if test="empty(key('delSpan-for-text',generate-id()))">
+      <xsl:next-match/>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="anchor[not(//zone[@corresp=concat('#', current()/@xml:id)])]">
     <xsl:if test="empty(key('delSpan-for-text',generate-id()))">
       <xsl:next-match/>
     </xsl:if>
