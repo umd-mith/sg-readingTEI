@@ -54,6 +54,6 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="milestone[@unit='tei:p']"/>
+    <xsl:template match="milestone[@unit='tei:p'][not(@spanTo)]"/>
     
 </xsl:stylesheet>
