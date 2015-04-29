@@ -16,6 +16,8 @@
                 <style type="text/css">
                     .pb {background-color:cyan}
                     .lg {padding-left: 2em}
+                    .l {display:block; padding:1em}
+                    .speaker {display:block; font-style: italic; padding-top:1em}
                     .diag {background-color:yellow}
                     .hyphenated {}
                     .underline {text-decoration:underline}
@@ -59,12 +61,24 @@
         </p>
     </xsl:template>
     
+    <xsl:template match="tei:speaker">
+        <span class="speaker">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+    
     <xsl:template match="tei:lg">
         <p class="lg">
             <xsl:for-each select="tei:l">
                 <xsl:apply-templates/><br/>
             </xsl:for-each>
         </p>
+    </xsl:template>
+    
+    <xsl:template match="tei:l">
+        <span class="l">
+            <xsl:apply-templates/>
+        </span>
     </xsl:template>
     
     <xsl:template match="tei:head">
