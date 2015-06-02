@@ -102,7 +102,8 @@
     </xsl:template>
     
     <xsl:template match="tei:lb">
-        <xsl:text> </xsl:text>
+        <!--<xsl:text> </xsl:text>-->
+        <br/>
     </xsl:template>
   
     <xsl:template match="tei:metamark"/>
