@@ -32,7 +32,18 @@
     <xsl:apply-templates/>
   </xsl:template>
   
-  <xsl:template match="del"/>
+  <xsl:template match="del[not(restore)]"/>
+  
+  <xsl:template match="del[restore]">
+    <xsl:for-each select="*">
+      <xsl:choose>
+        <xsl:when test="self::restore">
+          <xsl:apply-templates/>
+        </xsl:when>
+        <xsl:otherwise/>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
   
   <xsl:template match="addSpan | delSpan | modSpan | mod[@spanTo] | 
                        milestone[@unit='tei:seg'] | listTranspose "/>
